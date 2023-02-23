@@ -33,7 +33,7 @@ n'aurez pas à modifier la classe `TicTacToe`.
 
 ### Étape 2 - Décommenter le code du `main`
 
-Vous devez décommenter le code qui se trouve présentement dans le `main`, puis supprimer
+Vous devez décommenter le code qui se trouve présentement dans la fonction `main`, puis supprimer
 la ligne indiquée par un commentaire. Testez le programme à nouveau. Vous devriez voir ceci:
 
 ```console
@@ -53,6 +53,180 @@ En d'autres mots, l'hôte qui crée la partie doit agir comme serveur, et celui 
 la joint doit agir comme client.
 
 ## Étape 3 - Établir la connexion
+
+Pour cette étape, vous devez modifier **uniquement** le corps de la fonction `jouer`.
+
+Au début de la fonction, vous devez ajouter la logique pour établir la connexion
+entre les deux joueurs. Le serveur doit donc écouter sur le port reçu en paramètre
+et accepter une connexion entrante. Le client, pour sa part, doit plutôt se connecter
+au serveur à l'aide de l'adresse fournie par une saisie au clavier.
+
+Voici le pseudocode correspondant à cette logique:
+
+```pseudocode
+SI estServeur:
+	Écouter sur le port reçu en paramètre
+	Afficher "En attente de l'autre joueur..."
+	Accepter une connexion entrante et la lier à un socket
+	Afficher "L'autre joueur vient de se connecter"
+SINON:
+	Afficher "Entrer l'adresse du serveur:"
+	Lire la saisie au clavier dans adresseServeur
+	Connecter un socket à adresseServeur au port fourni en paramètre
+```
+
+Vous devez bien entendu déclarer toutes les variables nécessaires. Vous n'avez
+pas besoin de sélecteur, puisqu'un seul socket est nécessaire de part et d'autre.
+Vous n'avez donc pas non plus besoin d'un vecteur de sockets.
+
+Testez deux instances de votre programme (une en mode serveur et une
+en mode client). Vous devriez obtenir le résultat suivant:
+
+**Serveur**
+
+```console
+TIC TAC TOE
+===========
+
+Choisir une option:
+1. Créer une partie
+2. Joindre une partie
+
+Votre choix: 1
+En attente de l'autre joueur...
+L'autre joueur vient de se connecter.
+
+   1 2 3
+  -------
+a | | | |
+  -------
+b | | | |
+  -------
+c | | | |
+  -------
+
+C'est le tour des x.
+Où voulez-vous placer votre x?
+ligne colonne :
+```
+
+**Client**
+
+```console
+TIC TAC TOE
+===========
+
+Choisir une option:
+1. Créer une partie
+2. Joindre une partie
+
+Votre choix: 2
+Entrer l'adresse du serveur: 127.0.0.1
+
+   1 2 3
+  -------
+a | | | |
+  -------
+b | | | |
+  -------
+c | | | |
+  -------
+
+C'est le tour des x.
+Où voulez-vous placer votre x?
+ligne colonne :
+```
+
+## Étape 4 - Attribuer une lettre à chaque joueur
+
+Pour cette étape, vous devez modifier **uniquement** le corps de la fonction `jouer`.
+
+Il faut attribuer une lettre différente (`x` ou `o`) à chacun
+des deux joueurs. Ajoutez une variable `lettreJoueur` pour cela, puis modifiez votre
+code afin d'attribuer la lettre `x` à cette variable côté serveur, et `o` côté client.
+
+## Étape 5 - Demander la saisie au bon joueur 
+
+Pour cette étape, vous devez modifier **uniquement** le corps de la fonction `jouer`.
+
+Présentement, à chaque tour, le programme affiche "C'est le tour des x" ou bien
+"C'est le tour des o", puis demande une saisie, peu importe le joueur.
+
+Il faut modifier ce comportement pour que la saisie soit demandée seulement au joueur
+dont c'est le tour. À l'autre joueur, il faut plutôt afficher "C'est le tour de l'autre joueur.".
+
+Cette modification doit être implémentée dans la boucle de jeu
+(`while (ticTacToe.getGagnant() == ' ' && !ticTacToe.estMatchNul())`).
+Il ne faut pas modifier la condition de la boucle.
+
+Voici le résultat que vous devriez obtenir après cette modification:
+
+**Serveur**
+
+```console
+TIC TAC TOE
+===========
+
+Choisir une option:
+1. Créer une partie
+2. Joindre une partie
+
+Votre choix: 1
+En attente de l'autre joueur...
+L'autre joueur vient de se connecter.
+
+
+   1 2 3
+  -------
+a | | | |
+  -------
+b | | | |
+  -------
+c | | | |
+  -------
+
+C'est votre tour.
+Où voulez-vous placer votre x?
+ligne colonne : a 1
+
+   1 2 3
+  -------
+a |x| | |
+  -------
+b | | | |
+  -------
+c | | | |
+  -------
+
+C'est le tour de l'autre joueur.
+```
+
+**Client**
+
+```console
+TIC TAC TOE
+===========
+
+Choisir une option:
+1. Créer une partie
+2. Joindre une partie
+
+Votre choix: 2
+Entrer l'adresse du serveur: 127.0.0.1
+
+   1 2 3
+  -------
+a | | | |
+  -------
+b | | | |
+  -------
+c | | | |
+  -------
+
+C'est le tour de l'autre joueur.
+```
+
+## Étape 6 - Transmettre et traiter les données
 
 
 
