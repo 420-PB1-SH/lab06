@@ -28,7 +28,7 @@ Prenez le temps d'explorer le code existant dans les fichiers de départ, et d'e
 le projet pour bien comprendre le fonctionnement du programme. Observez surtout le code
 de la fonction `jouer` et assurez-vous de le comprendre.
 
-Durant le laboratoire, vous aurez seulement à modifier le `main` et la fonction `jouer`. Vous
+Durant le laboratoire, vous aurez seulement à modifier le fichier `main.cpp`. Vous
 n'aurez pas à modifier la classe `TicTacToe`.
 
 ### Étape 2 - Décommenter le code du `main`
@@ -52,9 +52,9 @@ est passée à ce paramètre.
 En d'autres mots, l'hôte qui crée la partie doit agir comme serveur, et celui qui
 la joint doit agir comme client.
 
-## Étape 3 - Établir la connexion
+### Étape 3 - Établir la connexion
 
-Pour cette étape, vous devez modifier **uniquement** le corps de la fonction `jouer`.
+*Pour cette étape, vous devez modifier **uniquement** le corps de la fonction `jouer` dans `main.cpp`.*
 
 Au début de la fonction, vous devez ajouter la logique pour établir la connexion
 entre les deux joueurs. Le serveur doit donc écouter sur le port reçu en paramètre
@@ -66,12 +66,12 @@ Voici le pseudocode correspondant à cette logique:
 ```pseudocode
 SI estServeur:
 	Écouter sur le port reçu en paramètre
-	Afficher "En attente de l'autre joueur..."
+	Afficher « En attente de l'autre joueur... »
 	Accepter une connexion entrante et la lier à un socket
-	Afficher "L'autre joueur vient de se connecter"
+	Afficher « L'autre joueur vient de se connecter »
 SINON:
-	Afficher "Entrer l'adresse du serveur:"
-	Lire la saisie au clavier dans adresseServeur
+	Afficher « Entrer l'adresse du serveur: »
+	Lire la saisie au clavier et l'assigner à adresseServeur
 	Connecter un socket à adresseServeur au port fourni en paramètre
 ```
 
@@ -137,17 +137,17 @@ Où voulez-vous placer votre x?
 ligne colonne :
 ```
 
-## Étape 4 - Attribuer une lettre à chaque joueur
+### Étape 4 - Attribuer une lettre à chaque joueur
 
-Pour cette étape, vous devez modifier **uniquement** le corps de la fonction `jouer`.
+*Pour cette étape, vous devez modifier **uniquement** le corps de la fonction `jouer` dans `main.cpp`.*
 
 Il faut attribuer une lettre différente (`x` ou `o`) à chacun
 des deux joueurs. Ajoutez une variable `lettreJoueur` pour cela, puis modifiez votre
-code afin d'attribuer la lettre `x` à cette variable côté serveur, et `o` côté client.
+code afin d'attribuer la lettre `x` à cette variable du côté serveur, et `o` du côté client.
 
-## Étape 5 - Demander la saisie au bon joueur 
+### Étape 5 - Demander la saisie au bon joueur
 
-Pour cette étape, vous devez modifier **uniquement** le corps de la fonction `jouer`.
+*Pour cette étape, vous devez modifier **uniquement** le corps de la fonction `jouer` dans `main.cpp`.*
 
 Présentement, à chaque tour, le programme affiche "C'est le tour des x" ou bien
 "C'est le tour des o", puis demande une saisie, peu importe le joueur.
@@ -226,11 +226,76 @@ c | | | |
 C'est le tour de l'autre joueur.
 ```
 
-## Étape 6 - Transmettre et traiter les données
+### Étape 6 - Transmettre et traiter les données
 
+*Pour cette étape, vous devez modifier **uniquement** le corps de la fonction `jouer` dans `main.cpp`.*
 
+Nous voilà maintenant à l'étape la plus cruciale pour faire de notre
+Tic Tac Toe un jeu en ligne!
+
+Lorsqu'un joueur effectue son tour, la position à laquelle il place sa lettre doit être envoyée à l'autre hôte, et l'autre hôte doit la recevoir et la traiter. Il faut donc ajouter l'envoi, la réception et
+le traitement des données à notre programme.
+
+Notre protocole sera très simple: les hôtes s'enverront des objets de type `Packet` contenant le numéro de ligne (entre 0 et 2) suivi du
+numéro de colonne (également entre 0 et 2). En d'autres mots, ils
+s'enverront les valeurs des variables `ligne` et `colonne` qui existent
+déjà dans le programme.
+
+Voici à quoi devrait ressembler la logique de haut niveau de la boucle `while` après avoir implémenté ces aspects du programme. Certaines étapes de l'implémentation réelle sont omises ici (par exemple, la boucle *do-while* déjà présente qui valide le choix du joueur et 
+le redemande au besoin).
+
+```pseudocode
+TANT QUE ticTacToe.getGagnant() = ' ' ET PAS ticTacToe.estMatchNul():
+    Afficher ticTacToe
+    SI lettreJoueur = tour:
+        Afficher « C'est votre tour. »
+        Lire la ligne et la colonne choisies par le joueur
+        ticTacToe.jouer(ligne, colonne, tour)
+
+        Créer un paquet contenant la ligne et la colonne
+        Envoyer le paquet sur le socket
+    SINON:
+        Afficher « C'est le tour de l'autre joueur. »
+
+        Recevoir un paquet
+        Extraire la ligne et la colonne du paquet reçu
+        ticTacToe.jouer(ligne, colonne, tour)
+        Afficher « L'autre joueur a joué. »
+
+    SI tour = 'x':
+        tour = 'o'
+    SINON:
+        tour = 'x'
+```
+
+Si vous réutilisez le même `Packet` à chaque itération pour créer
+votre paquet sortant, n'oubliez pas de le réinitialiser à la fin 
+de la boucle.
+
+### Étape 7 - Gérer les déconnexions
+
+*Pour cette étape, vous devez modifier **uniquement** le corps de la fonction `jouer` dans `main.cpp`.*
+
+Pour compléter notre programme, il faut aussi détecter lorsque l'autre joueur se déconnecte, et mettre
+fin à la partie lorsque cela survient.
+
+Les sockets TCP de SFML retournent l'état de la connexion (`status`) chaque fois qu'on fait un
+`send` ou un `receive`. On peut donc s'en servir pour détecter une
+déconnexion. Suite à cette détection, on veut afficher un message à
+l'écran indiquant que l'autre joueur s'est déconnecté, puis mettre fin
+à la fonction `jouer` (avec un `return;`).
+
+Référez-vous aux notes de cours pour cette étape.
+
+Pour provoquer une déconnexion, il suffit de fermer une des deux instances
+du programme.
+
+### Étape 8 (facultatif) - Tester sur des ordinateurs différents
+
+Une fois que le tout est bien testé et fonctionnel, testez maintenant votre solution en exécutant le client et le serveur sur deux ordinateurs distincts!
 
 ## Références utiles
 
+* Notes de cours du chapitre 06 sur Moodle
 * [Tutoriel du module réseau de SFML](https://www.sfml-dev.org/tutorials/2.5/index-fr.php#module-rceseau)
 * [Documentation des classes du module réseau de SFML](https://www.sfml-dev.org/documentation/2.5.1-fr/group__network.php)
