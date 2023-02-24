@@ -149,11 +149,11 @@ code afin d'attribuer la lettre `x` à cette variable du côté serveur, et `o` 
 
 *Pour cette étape, vous devez modifier **uniquement** le corps de la fonction `jouer` dans `main.cpp`.*
 
-Présentement, à chaque tour, le programme affiche "C'est le tour des x" ou bien
-"C'est le tour des o", puis demande une saisie, peu importe le joueur.
+Présentement, à chaque tour, le programme affiche « C'est le tour des x » ou bien
+« C'est le tour des o », puis demande une saisie, peu importe le joueur.
 
 Il faut modifier ce comportement pour que la saisie soit demandée seulement au joueur
-dont c'est le tour. À l'autre joueur, il faut plutôt afficher "C'est le tour de l'autre joueur.".
+dont c'est le tour. À l'autre joueur, il faut plutôt afficher « C'est le tour de l'autre joueur. ».
 
 Cette modification doit être implémentée dans la boucle de jeu
 (`while (ticTacToe.getGagnant() == ' ' && !ticTacToe.estMatchNul())`).
@@ -249,7 +249,7 @@ TANT QUE ticTacToe.getGagnant() = ' ' ET PAS ticTacToe.estMatchNul():
     Afficher ticTacToe
     SI lettreJoueur = tour:
         Afficher « C'est votre tour. »
-        Lire la ligne et la colonne choisies par le joueur
+        Lire la ligne et la colonne saisies par le joueur
         ticTacToe.jouer(ligne, colonne, tour)
 
         Créer un paquet contenant la ligne et la colonne
