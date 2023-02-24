@@ -56,7 +56,7 @@ la joint doit agir comme client.
 
 *Pour cette étape, vous devez modifier **uniquement** le corps de la fonction `jouer` dans `main.cpp`.*
 
-Au début de la fonction, vous devez ajouter la logique pour établir la connexion
+Au début de la fonction, vous devez ajouter la logique pour établir une connexion TCP
 entre les deux joueurs. Le serveur doit donc écouter sur le port reçu en paramètre
 et accepter une connexion entrante. Le client, pour sa part, doit plutôt se connecter
 au serveur à l'aide de l'adresse fournie par une saisie au clavier.
