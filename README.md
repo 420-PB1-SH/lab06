@@ -272,7 +272,7 @@ Si vous réutilisez le même `Packet` à chaque itération pour créer
 votre paquet sortant, n'oubliez pas de le réinitialiser à la fin 
 de la boucle.
 
-### Étape 7 - Gérer les déconnexions
+### Étape 7 - Gérer la déconnexion
 
 *Pour cette étape, vous devez modifier **uniquement** le corps de la fonction `jouer` dans `main.cpp`.*
 
@@ -285,10 +285,10 @@ déconnexion. Suite à cette détection, on veut afficher un message à
 l'écran indiquant que l'autre joueur s'est déconnecté, puis mettre fin
 à la fonction `jouer` (avec un `return;`).
 
-Référez-vous aux notes de cours pour cette étape.
+Par ailleurs, à la fin de la fonction `jouer`, on veut appeler la méthode `disconnect` sur le socket
+pour les deux hôtes afin de fermer la connexion proprement avant de passer à une autre partie.
 
-Pour provoquer une déconnexion, il suffit de fermer une des deux instances
-du programme.
+Référez-vous aux notes de cours pour cette étape.
 
 ### Étape 8 (facultatif) - Tester sur des ordinateurs différents
 
